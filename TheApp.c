@@ -1,29 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <time.h>
-#include <unistd.h>
-#include <ctype.h>
-#include <math.h>
-#include <string.h>
 
 float randomFloatInRange(float min, float max);
 
-
-int main(int argc, char**argv)
-{
-    
-    int a,b,total,gamble;
+int main(int argc, char** argv) {
+    int total, gamble;
     float upgrader;
     srand(time(NULL));
+
     printf("Enter the amount of money you got: ");
     scanf("%d", &total);
+
     while (total > 0) {
         printf("Enter the amount of money you want to gamble: ");
         scanf("%d", &gamble);
-        
+
         if (gamble <= 0 || gamble > total) {
-            printf("Invalid input. Please enter a valid amount.\n");
+            printf("Invalid input. You cant gamble higher than your total.\n");
             continue;
         }
 
@@ -31,45 +25,45 @@ int main(int argc, char**argv)
 
         printf("Choose the upgrade system:\n");
         printf("1. 1.5x\n2. 2x\n3. 5x\n4. 10x\n");
-        printf("Enter your choice: ");
+        printf("Write 1 for 1.5x 2 for 2x etc. Enter your choice: ");
         scanf("%f", &upgrader);
-        int choice = (int)(upgrader * 10);
-        float randomNumber;
-        switch (choice) {
-            case 15:
-                upgrader = 1.5;
-                randomNumber = randomFloatInRange(0.00, 100.00);
-                if (randomNumber >= 0.00 && randomNumber <= 44.99) {
-                    float profit = gamble * upgrader;
-                    total += profit;
-                    printf("Congratulations! You made your money: %.2f\n", profit);
-                } else {
-                    printf("Sorry, you lost.\n");
-                }
-                
-                break;
-            case 20:
-                upgrader = 2.0;
-                break;
-            case 50:
-                upgrader = 5.0;
-                break;
-            case 100:
-                upgrader = 10.0;
-                break;
-            default:
-                printf("Invalid choice. Please choose a valid upgrade system.\n");
-                total += gamble; // Refund the gamble amount
-                continue;
-        }
-   }
 
-    
+        if (upgrader == 1.5 || upgrader == 2.0 || upgrader == 5.0 || upgrader == 10.0) {
+            float randomNumber = randomFloatInRange(0.00, 100.00);
+            bool won = false;
+            float profit = 0.0;
+
+            if (upgrader == 1.5 && randomNumber <= 58.89) {
+                won = true;
+                profit = gamble * upgrader;
+            } else if (upgrader == 2.0 && randomNumber <= 43.76) {
+                won = true;
+                profit = gamble * upgrader;
+            } else if (upgrader == 5.0 && randomNumber <= 14.68) {
+                won = true;
+                profit = gamble * upgrader;
+            } else if (upgrader == 10.0 && randomNumber <= 9.86) {
+                won = true;
+                profit = gamble * upgrader;
+            }
+
+            if (won) {
+                total += profit;
+                printf("Cool You made your money: %.2f\n", profit);
+            } else {
+                printf("You lost.\n");
+            }
+        } else {
+            printf("Invalid choice. Choose a valid upgrade.\n");
+            total += gamble;
+        }
+
+        printf("total money: %d\n", total);
+    }
+
     return 0;
 }
 
 float randomFloatInRange(float min, float max) {
-    int randomInt = rand() % 10001;
-    float randomFloat = randomInt / 100.0;
-    return min + randomFloat;
+    return min + (rand() / (float)RAND_MAX) * (max - min);
 }
